@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Ingresar · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center g-4">
+        <div class="col-md-7 col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="text-center mb-4">
+                        <div class="feature-icon bg-soft-green mx-auto mb-3"><i class="bi bi-person-lock"></i></div>
+                        <h1 class="h3 fw-bold mb-1">Iniciar sesión</h1>
+                        <p class="text-secondary small mb-0">Accede a tu perfil, canasta y compras.</p>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger small">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+                        {% include "partials/_campo.html" with campo=form.username %}
+                        {% include "partials/_campo.html" with campo=form.password %}
+
+                        <button type="submit" class="btn btn-vet w-100 btn-lg mt-2">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Ingresar
+                        </button>
+                    </form>
+
+                    <p class="text-center small text-secondary mt-4 mb-0">
+                        ¿No tienes cuenta?
+                        <a href="{% url 'usuarios:registro' %}" class="fw-semibold text-decoration-none">Regístrate aquí</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-lg-5">
+            <div class="card border-0 shadow-sm h-100 bg-soft-green">
+                <div class="card-body p-4 p-lg-5">
+                    <h2 class="h6 text-uppercase fw-bold text-vetcare mb-3">
+                        <i class="bi bi-key me-1"></i>Acceso de demostración
+                    </h2>
+                    <p class="small text-secondary">
+                        Si ejecutaste el comando de poblado, puedes ingresar con las
+                        credenciales del administrador para probar el CRUD y el panel.
+                    </p>
+                    <ul class="list-unstyled small mb-4">
+                        <li class="mb-1"><span class="text-muted">Usuario:</span> <code>admin</code></li>
+                        <li><span class="text-muted">Contraseña:</span> <code>admin123</code></li>
+                    </ul>
+                    <div class="alert alert-light border small mb-0">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Las rutas de creación, edición y eliminación exigen
+                        <code>is_staff=True</code>. Un cliente no puede acceder a la gestión.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}Comprobante {{ comprobante.folio }} · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm comprobante">
+                <div class="card-header bg-vetcare text-white p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                        <div>
+                            <h1 class="h4 mb-1"><i class="bi bi-check-circle-fill me-2"></i>Compra confirmada</h1>
+                            <p class="mb-0 text-white-75 small">Comprobante de compra · VetCare Central & Pet Shop</p>
+                        </div>
+                        <div class="text-lg-end">
+                            <div class="small text-white-50">Folio</div>
+                            <div class="fs-4 fw-bold">{{ comprobante.folio }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="row g-4 mb-4">
+                        <div class="col-sm-6">
+                            <h2 class="h6 text-uppercase text-muted fw-bold mb-2">Cliente</h2>
+                            <p class="mb-1 fw-semibold">{{ comprobante.tutor }}</p>
+                            <p class="small text-secondary mb-1"><i class="bi bi-envelope me-1"></i>{{ comprobante.email }}</p>
+                            <p class="small text-secondary mb-0"><i class="bi bi-telephone me-1"></i>{{ comprobante.telefono }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h2 class="h6 text-uppercase text-muted fw-bold mb-2">Compra</h2>
+                            <p class="small text-secondary mb-1"><i class="bi bi-calendar3 me-1"></i>Emitido: {{ comprobante.fecha }}</p>
+                            <p class="small text-secondary mb-0">
+                                <i class="bi bi-geo-alt me-1"></i>Entrega:
+                                {{ comprobante.direccion|default:"Retiro en tienda" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col" class="text-center">Cant.</th>
+                                    <th scope="col" class="text-end">Precio</th>
+                                    <th scope="col" class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in comprobante.items %}
+                                <tr>
+                                    <td class="small text-muted">{{ item.codigo }}</td>
+                                    <td>
+                                        <div class="fw-semibold">{{ item.nombre }}</div>
+                                        <div class="small text-muted">{{ item.categoria }}</div>
+                                    </td>
+                                    <td class="text-center">{{ item.cantidad }}</td>
+                                    <td class="text-end text-nowrap">{{ item.precio|clp }}</td>
+                                    <td class="text-end text-nowrap fw-semibold">{{ item.subtotal|clp }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-sm-6 col-md-5">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-secondary">Subtotal</span>
+                                <span>{{ comprobante.subtotal|clp }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">IVA ({{ comprobante.tasa_iva }}%)</span>
+                                <span>{{ comprobante.iva|clp }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-top pt-2">
+                                <span class="fw-bold">Total de la compra</span>
+                                <span class="fs-5 fw-bold text-vetcare">{{ comprobante.total|clp }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if comprobante.observaciones %}
+                    <div class="mt-4">
+                        <h2 class="h6 text-uppercase text-muted fw-bold mb-1">Observaciones</h2>
+                        <p class="small text-secondary mb-0">{{ comprobante.observaciones|linebreaksbr }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-light border mt-4 mb-0 small">
+                        <i class="bi bi-info-circle me-1 text-vetcare"></i>
+                        Este comprobante es una <strong>simulación académica</strong> y no constituye
+                        una boleta ni un pago. El equipo de VetCare Central contactará al cliente para
+                        coordinar la entrega de los productos.
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white p-4 no-print">
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-vet" onclick="window.print()">
+                            <i class="bi bi-printer me-1"></i>Imprimir comprobante
+                        </button>
+                        <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-vet">
+                            <i class="bi bi-grid me-1"></i>Volver al catálogo
+                        </a>
+                        <form method="post" action="{% url 'pedidos:cerrar_comprobante' %}" class="ms-auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-lg me-1"></i>Cerrar comprobante
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

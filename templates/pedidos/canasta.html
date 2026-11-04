@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}Mi canasta de compras · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Canasta de compras</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <h1 class="h2 fw-bold mb-1"><i class="bi bi-basket2 me-2 text-vetcare"></i>Canasta de compras</h1>
+            <p class="text-secondary mb-0">
+                Revisa los productos para mascotas que agregaste antes de confirmar tu compra.
+            </p>
+        </div>
+        <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-vet">
+            <i class="bi bi-plus-circle me-1"></i>Seguir comprando
+        </a>
+    </div>
+
+    {% if items %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 tabla-canasta">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Producto</th>
+                                <th scope="col" class="text-end">Precio</th>
+                                <th scope="col" class="text-center" style="min-width: 150px;">Cantidad</th>
+                                <th scope="col" class="text-end">Subtotal</th>
+                                <th scope="col" class="text-center">Quitar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    <a href="{{ item.producto.get_absolute_url }}" class="fw-semibold text-decoration-none text-dark">
+                                        {{ item.producto.nombre }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        {{ item.producto.codigo }} · {{ item.producto.categoria.nombre }}
+                                    </div>
+                                    <span class="badge text-bg-light border mt-1">Stock: {{ item.producto.stock }}</span>
+                                </td>
+                                <td class="text-end text-nowrap">{{ item.producto.precio|clp }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'pedidos:actualizar' item.producto.pk %}"
+                                          class="d-flex gap-1 justify-content-center">
+                                        {% csrf_token %}
+                                        <label class="visually-hidden" for="cantidad-{{ item.producto.pk }}">
+                                            Cantidad de {{ item.producto.nombre }}
+                                        </label>
+                                        <input type="number" class="form-control form-control-sm text-center"
+                                               id="cantidad-{{ item.producto.pk }}" name="cantidad"
+                                               value="{{ item.cantidad }}" min="1"
+                                               max="{{ item.producto.stock|default:1 }}"
+                                               style="max-width: 75px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-vet" title="Actualizar cantidad">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="text-end fw-semibold text-nowrap">{{ item.subtotal|clp }}</td>
+                                <td class="text-center">
+                                    <form method="post" action="{% url 'pedidos:quitar' item.producto.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Quitar de la canasta">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span class="small text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Los precios se expresan en pesos chilenos (CLP).
+                    </span>
+                    <form method="post" action="{% url 'pedidos:vaciar' %}"
+                          onsubmit="return confirm('¿Seguro que deseas vaciar toda la canasta?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-x-circle me-1"></i>Vaciar canasta
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% if not user.is_authenticated %}
+            <div class="alert alert-light border mt-3 mb-0 small">
+                <i class="bi bi-person-plus me-1 text-vetcare"></i>
+                ¿Ya tienes cuenta? <a href="{% url 'usuarios:login' %}?next={% url 'pedidos:checkout' %}">Inicia sesión</a>
+                para precargar tus datos de contacto. También puedes continuar como invitado.
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h2 class="h5 mb-0"><i class="bi bi-receipt me-2 text-vetcare"></i>Resumen de compra</h2>
+                </div>
+                <div class="card-body px-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Unidades</span>
+                        <span class="fw-semibold">{{ totales.total_items }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Subtotal</span>
+                        <span class="fw-semibold">{{ totales.subtotal|clp }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">IVA ({{ totales.tasa_iva }}%)</span>
+                        <span class="fw-semibold">{{ totales.iva|clp }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <span class="fw-bold">Total estimado</span>
+                        <span class="total-canasta">{{ totales.total|clp }}</span>
+                    </div>
+                    <p class="small text-muted mt-2 mb-0">
+                        El stock se descuenta al confirmar la compra.
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0 px-4 pb-4">
+                    <a href="{% url 'pedidos:checkout' %}" class="btn btn-vet btn-lg w-100">
+                        <i class="bi bi-credit-card me-1"></i>Continuar al checkout
+                    </a>
+                    <p class="small text-center text-muted mb-0 mt-2">
+                        Checkout simulado: no se realizará ningún cobro real.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-basket display-1 text-muted"></i>
+            <h2 class="h4 mt-3">Tu canasta está vacía</h2>
+            <p class="text-secondary mb-4">
+                Agrega productos para mascotas desde el catálogo para iniciar tu compra.
+            </p>
+            <a href="{% url 'catalogo:lista' %}" class="btn btn-vet btn-lg">
+                <i class="bi bi-grid me-1"></i>Explorar catálogo
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

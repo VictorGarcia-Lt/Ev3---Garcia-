@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}Checkout de compra · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'pedidos:ver_canasta' %}">Canasta</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+        </ol>
+    </nav>
+
+    <div class="mb-4">
+        <h1 class="h2 fw-bold mb-1"><i class="bi bi-bag-check me-2 text-vetcare"></i>Finalizar compra</h1>
+        <p class="text-secondary mb-0">
+            Completa tus datos de contacto para generar el comprobante. Este proceso es simulado
+            y el stock se descuenta al confirmar.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3">Datos del cliente</h2>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.nombre_tutor %}</div>
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.email %}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.telefono %}</div>
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.direccion %}</div>
+                        </div>
+                        {% include "partials/_campo.html" with campo=form.observaciones %}
+
+                        <div class="alert alert-light border small">
+                            <i class="bi bi-shield-check me-1 text-vetcare"></i>
+                            Tus datos se usan solo para coordinar la entrega de los productos.
+                            No se realizará ningún cargo en línea.
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit" class="btn btn-vet btn-lg px-4">
+                                <i class="bi bi-check2-circle me-1"></i>Confirmar compra
+                            </button>
+                            <a href="{% url 'pedidos:ver_canasta' %}" class="btn btn-outline-secondary btn-lg">
+                                Volver a la canasta
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h2 class="h5 mb-0">Resumen de compra</h2>
+                </div>
+                <div class="card-body px-4">
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for item in items %}
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <div class="fw-semibold small">{{ item.producto.nombre }}</div>
+                                <div class="small text-muted">
+                                    {{ item.cantidad }} × {{ item.producto.precio|clp }}
+                                </div>
+                            </div>
+                            <span class="small fw-semibold text-nowrap">{{ item.subtotal|clp }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Subtotal</span>
+                        <span class="fw-semibold">{{ totales.subtotal|clp }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">IVA ({{ totales.tasa_iva }}%)</span>
+                        <span class="fw-semibold">{{ totales.iva|clp }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <span class="fw-bold">Total de la compra</span>
+                        <span class="total-canasta">{{ totales.total|clp }}</span>
+                    </div>
+                    <p class="small text-muted mt-2 mb-0">
+                        Al confirmar se descontarán las unidades del stock disponible.
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-0 px-4 pb-4">
+                    <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-vet w-100">
+                        <i class="bi bi-plus-circle me-1"></i>Agregar más productos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

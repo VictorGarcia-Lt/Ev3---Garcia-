@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}Mi perfil · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Mi perfil</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <div class="perfil-avatar mx-auto mb-3">{{ user.nombre_completo|slice:":1"|upper }}</div>
+                    <h1 class="h4 fw-bold mb-1">{{ user.nombre_completo }}</h1>
+                    <p class="text-vetcare small mb-2">{{ user.get_rol_display }}</p>
+                    {% if user.is_staff %}
+                    <span class="badge bg-dark"><i class="bi bi-shield-lock me-1"></i>Personal autorizado</span>
+                    {% else %}
+                    <span class="badge text-bg-light border">Cliente registrado</span>
+                    {% endif %}
+
+                    <hr>
+                    <ul class="list-unstyled small text-start mb-0">
+                        <li class="mb-2"><i class="bi bi-person me-2 text-muted"></i>{{ user.username }}</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2 text-muted"></i>{{ user.email|default:"Sin correo" }}</li>
+                        <li class="mb-2"><i class="bi bi-credit-card-2-front me-2 text-muted"></i>{{ user.rut_formateado }}</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2 text-muted"></i>{{ user.telefono|default:"Sin teléfono" }}</li>
+                        <li><i class="bi bi-calendar3 me-2 text-muted"></i>Registro: {{ user.creado_en|date:"d/m/Y" }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white border-0 pb-4">
+                    <a href="{% url 'pedidos:ver_canasta' %}" class="btn btn-vet w-100">
+                        <i class="bi bi-basket2 me-1"></i>Ver mi canasta
+                    </a>
+                </div>
+            </div>
+
+            {% if user.is_staff %}
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body p-4">
+                    <h2 class="h6 text-uppercase text-muted fw-bold mb-3">
+                        <i class="bi bi-sliders me-1"></i>Panel de gestión
+                    </h2>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'catalogo:crear' %}" class="btn btn-outline-vet btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i>Nuevo producto
+                        </a>
+                        <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-shield-lock me-1"></i>Administración Django
+                        </a>
+                        <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-grid me-1"></i>Gestionar catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body p-4">
+                    <h2 class="h6 text-uppercase text-muted fw-bold mb-3">Sesión</h2>
+                    <form method="post" action="{% url 'usuarios:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h2 class="h5 mb-1">Editar datos personales</h2>
+                    <p class="text-secondary small mb-0">
+                        Puedes actualizar tus nombres, correo y teléfono de contacto.
+                    </p>
+                </div>
+                <div class="card-body p-4">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.first_name %}</div>
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.last_name %}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.email %}</div>
+                            <div class="col-md-6">{% include "partials/_campo.html" with campo=form.telefono %}</div>
+                        </div>
+                        <button type="submit" class="btn btn-vet">
+                            <i class="bi bi-check2-circle me-1"></i>Guardar cambios
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-2"><i class="bi bi-shield-check me-2 text-vetcare"></i>Seguridad de la cuenta</h2>
+                    <p class="small text-secondary mb-3">
+                        Tu contraseña se almacena cifrada. Puedes cambiarla cuando lo necesites
+                        sin cerrar tu sesión actual.
+                    </p>
+                    <a href="{% url 'usuarios:password_change' %}" class="btn btn-outline-vet btn-sm">
+                        <i class="bi bi-key me-1"></i>Cambiar mi contraseña
+                    </a>
+                    <p class="small text-muted mb-0">
+                        RUT <strong>{{ user.rut_formateado }}</strong> · Rol
+                        <strong>{{ user.get_rol_display }}</strong> · Estado
+                        <strong>{% if user.is_active %}Activo{% else %}Inactivo{% endif %}</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
