@@ -1,8 +1,11 @@
-{% load vetcare_extras %}
+{% load static vetcare_extras %}
 <div class="col-sm-6 col-lg-4">
     <article class="card h-100 shadow-sm card-producto">
         <a href="{{ producto.get_absolute_url }}" class="text-decoration-none">
-            {% if producto.imagen %}
+            {% if producto.imagen_estatica %}
+            <img src="{% static producto.imagen_estatica %}" class="card-img-top img-catalogo"
+                 alt="{{ producto.nombre }}" loading="lazy">
+            {% elif producto.imagen %}
             <img src="{{ producto.imagen.url }}" class="card-img-top img-catalogo" alt="{{ producto.nombre }}">
             {% else %}
             <div class="card-img-top img-catalogo placeholder-catalogo">

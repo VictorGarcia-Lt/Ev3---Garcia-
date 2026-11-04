@@ -1,18 +1,6 @@
 .venv/
 .venv
+.env/
 __pycache__/
-*.py[cod]
 *.sqlite3
 
-.env
-.env/
-.env.*
-!.env.example
-
-media/
-staticfiles/
-
-.pytest_cache/
-.coverage
-htmlcov/
-.DS_Store

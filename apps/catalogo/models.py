@@ -8,6 +8,21 @@ from django.urls import reverse
 
 from .utils import generar_slug_unico
 
+IMAGENES_ESTATICAS = {
+    "FAR-001": "catalogo/img/ComidaPerroAdultoPremium.jpg",
+    "FAR-002": "catalogo/img/AntiparasitarioGato.jpg",
+    "FAR-003": "catalogo/img/Shampoo.jpg",
+    "FAR-004": "catalogo/img/SnackDental.jpg",
+    "FAR-005": "catalogo/img/SuplementoPerroViejo.jpg",
+    "ALI-001": "catalogo/img/ComidaGatoAdulto.jpg",
+    "ALI-002": "catalogo/img/ComidaPerroCachorro.jpg",
+    "HIG-001": "catalogo/img/CepilloDeslanador.jpg",
+    "HIG-002": "catalogo/img/ToallitasHigienicasMascotas.jpg",
+    "ACC-001": "catalogo/img/JuguetePerro.jpg",
+    "ACC-002": "catalogo/img/CamaOrtopedicaPerro.jpg",
+    "ACC-003": "catalogo/img/CorreaReflectante.jpg",
+}
+
 
 class CategoriaProducto(models.Model):
     """Categoría que agrupa los productos de la tienda."""
@@ -171,6 +186,11 @@ class Producto(models.Model):
             self.Estado.SUSPENDIDO: "warning",
             self.Estado.AGOTADO: "danger",
         }.get(self.estado, "secondary")
+
+    @property
+    def imagen_estatica(self):
+        """Ruta relativa de la imagen de demostración en static/catalogo/img/."""
+        return IMAGENES_ESTATICAS.get(self.codigo)
 
     def get_absolute_url(self):
         return reverse("catalogo:detalle", kwargs={"slug": self.slug})
