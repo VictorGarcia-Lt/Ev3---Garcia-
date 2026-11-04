@@ -1,0 +1,200 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="VetCare Central & Pet Shop: alimentos, higiene, accesorios y productos de cuidado para mascotas.">
+    <title>{% block title %}VetCare Central & Pet Shop{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<a class="visually-hidden-focusable p-2 bg-dark text-white" href="#contenido">Saltar al contenido principal</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-vetcare sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:inicio' %}">
+            <span class="brand-badge"><i class="bi bi-bag-heart-fill"></i></span>
+            <span class="brand-text">VetCare <small>Central</small></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'inicio' %}active{% endif %}"
+                       href="{% url 'core:inicio' %}">
+                        <i class="bi bi-house-door me-1"></i>Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.app_name == 'catalogo' %}active{% endif %}"
+                       href="{% url 'catalogo:lista' %}">
+                        <i class="bi bi-grid me-1"></i>Catálogo
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'nosotros' %}active{% endif %}"
+                       href="{% url 'core:nosotros' %}">
+                        <i class="bi bi-shop me-1"></i>Nosotros
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contacto' %}active{% endif %}"
+                       href="{% url 'core:contacto' %}">
+                        <i class="bi bi-telephone me-1"></i>Contacto
+                    </a>
+                </li>
+                {% if user.is_staff %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-sliders me-1"></i>Gestión
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'catalogo:crear' %}">
+                            <i class="bi bi-plus-circle me-1"></i>Nuevo producto
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                            <i class="bi bi-shield-lock me-1"></i>Panel de administración
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'catalogo:lista' %}">
+                            <i class="bi bi-box-seam me-1"></i>Inventario en catálogo
+                        </a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav align-items-lg-center gap-lg-2">
+                <li class="nav-item">
+                    <a class="nav-link position-relative" href="{% url 'pedidos:ver_canasta' %}">
+                        <i class="bi bi-basket2 me-1"></i>Canasta
+                        {% if canasta_total_items %}
+                        <span class="badge rounded-pill bg-warning text-dark badge-canasta">{{ canasta_total_items }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="avatar-nav">{{ user.nombre_completo|slice:":1"|upper }}</span>
+                        <span>{{ user.nombre_completo }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="px-3 py-2">
+                            <div class="fw-semibold">{{ user.nombre_completo }}</div>
+                            <div class="small text-muted">{{ user.get_rol_display }}</div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'usuarios:perfil' %}">
+                            <i class="bi bi-person-gear me-1"></i>Mi perfil
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'pedidos:ver_canasta' %}">
+                            <i class="bi bi-basket2 me-1"></i>Mi canasta
+                        </a></li>
+                        {% if user.is_staff %}
+                        <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                            <i class="bi bi-shield-lock me-1"></i>Administración
+                        </a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'usuarios:logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'usuarios:login' %}">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Ingresar
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-light btn-sm fw-semibold" href="{% url 'usuarios:registro' %}">Registrarme</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="container mt-3" aria-live="polite">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-info-circle me-1"></i>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main id="contenido" class="flex-grow-1">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer-vetcare mt-5">
+    <div class="container py-4">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-bag-heart-fill me-1"></i>VetCare Central
+                </h5>
+                <p class="small text-white-50 mb-2">
+                    Pet shop de productos para mascotas: alimentos, higiene, accesorios
+                    y cuidado diario en un solo lugar.
+                </p>
+                <p class="small text-white-50 mb-0">
+                    <i class="bi bi-geo-alt me-1"></i>Av. Los Robles 1240, Santiago
+                </p>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <h6 class="text-uppercase fw-bold small mb-3">Horario de tienda</h6>
+                <ul class="list-unstyled small text-white-50 mb-0">
+                    <li class="mb-1"><i class="bi bi-clock me-1"></i>Lun a Vie · 09:00 a 20:00</li>
+                    <li class="mb-1"><i class="bi bi-clock me-1"></i>Sábado · 10:00 a 18:00</li>
+                    <li><i class="bi bi-telephone me-1"></i>+56 2 2345 6789</li>
+                </ul>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <h6 class="text-uppercase fw-bold small mb-3">Contacto</h6>
+                <ul class="list-unstyled small text-white-50 mb-0">
+                    <li class="mb-1"><i class="bi bi-envelope me-1"></i>hola@vetcare.cl</li>
+                    <li class="mb-1"><i class="bi bi-whatsapp me-1"></i>+56 9 8765 4321</li>
+                    <li><i class="bi bi-instagram me-1"></i>@vetcarecentral</li>
+                </ul>
+            </div>
+            <div class="col-lg-2">
+                <h6 class="text-uppercase fw-bold small mb-3">Accesos</h6>
+                <ul class="list-unstyled small mb-0">
+                    <li class="mb-1"><a href="{% url 'catalogo:lista' %}">Catálogo</a></li>
+                    <li class="mb-1"><a href="{% url 'pedidos:ver_canasta' %}">Mi canasta</a></li>
+                    <li class="mb-1"><a href="{% url 'usuarios:perfil' %}">Mi perfil</a></li>
+                    <li><a href="{% url 'core:nosotros' %}">Nosotros</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-secondary my-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between small text-white-50">
+            <span>© {% now "Y" %} VetCare Central & Pet Shop. Todos los derechos reservados.</span>
+            <span>Proyecto académico · Programación Back End · INACAP</span>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

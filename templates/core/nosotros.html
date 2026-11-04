@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Nosotros · VetCare Central{% endblock %}
+
+{% block content %}
+<section class="page-header-vetcare">
+    <div class="container py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Nosotros</li>
+            </ol>
+        </nav>
+        <h1 class="display-6 fw-bold mb-2">Quiénes somos</h1>
+        <p class="lead mb-0 text-white-75">
+            Una tienda de productos para mascotas, enfocada en alimentos, higiene,
+            accesorios y cuidado diario.
+        </p>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-lg-7">
+            <span class="text-uppercase small fw-bold text-vetcare">Nuestra historia</span>
+            <h2 class="h3 fw-bold mt-2 mb-3">Un pet shop pensado para tu mascota</h2>
+            <p class="text-secondary">
+                VetCare Central nació como un pet shop de barrio con una idea simple:
+                reunir en un solo lugar los productos que las mascotas necesitan para
+                su alimentación, higiene y comodidad.
+            </p>
+            <p class="text-secondary">
+                Hoy ofrecemos un catálogo en línea con stock actualizado, precios claros
+                y la posibilidad de comprar desde cualquier lugar. Puedes recibir tu
+                pedido en casa o retirarlo directamente en nuestra tienda.
+            </p>
+            <div class="row g-3 mt-4">
+                <div class="col-sm-6">
+                    <div class="d-flex gap-3">
+                        <div class="feature-icon bg-soft-green flex-shrink-0"><i class="bi bi-bag-heart"></i></div>
+                        <div>
+                            <h3 class="h6 mb-1">Productos para el día a día</h3>
+                            <p class="small text-secondary mb-0">Alimentos, higiene y accesorios.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex gap-3">
+                        <div class="feature-icon bg-soft-blue flex-shrink-0"><i class="bi bi-people"></i></div>
+                        <div>
+                            <h3 class="h6 mb-1">Trato cercano</h3>
+                            <p class="small text-secondary mb-0">Te ayudamos a encontrar lo que buscas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h5 mb-3"><i class="bi bi-building me-2 text-vetcare"></i>Nuestra tienda</h3>
+                    <ul class="list-unstyled small mb-0">
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Razón social</span>
+                            <span class="fw-semibold text-end">VetCare Central & Pet Shop</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Giro</span>
+                            <span class="fw-semibold text-end">Venta de productos para mascotas</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Dirección</span>
+                            <span class="fw-semibold text-end">Av. Los Robles 1240</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Teléfono</span>
+                            <span class="fw-semibold text-end">+56 2 2345 6789</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-2">
+                            <span class="text-muted">Correo</span>
+                            <span class="fw-semibold text-end">hola@vetcare.cl</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-soft-green py-5">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="text-uppercase small fw-bold text-vetcare">Propósito</span>
+            <h2 class="h3 fw-bold mb-1">Misión, visión y valores</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="feature-icon bg-soft-green mb-3"><i class="bi bi-bullseye"></i></div>
+                        <h3 class="h6">Misión</h3>
+                        <p class="small text-secondary mb-0">
+                            Ofrecer productos de calidad para el cuidado diario de las
+                            mascotas, con una experiencia de compra simple y transparente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="feature-icon bg-soft-blue mb-3"><i class="bi bi-eye"></i></div>
+                        <h3 class="h6">Visión</h3>
+                        <p class="small text-secondary mb-0">
+                            Ser la tienda de productos para mascotas de referencia en Santiago,
+                            reconocida por su variedad, confianza y cercanía.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="feature-icon bg-soft-amber mb-3"><i class="bi bi-gem"></i></div>
+                        <h3 class="h6">Valores</h3>
+                        <p class="small text-secondary mb-0">
+                            Bienestar animal, transparencia, responsabilidad y un trato
+                            cercano con cada cliente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="h4 fw-bold mb-2">Categorías disponibles</h2>
+                    <p class="text-secondary small mb-0">
+                        Cada categoría agrupa productos con precio, stock y disponibilidad
+                        actualizada para que encuentres lo que necesitas.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                        {% for categoria in categorias %}
+                        <a href="{{ categoria.get_absolute_url }}" class="badge text-bg-light border text-decoration-none p-2">
+                            <i class="bi bi-chevron-right me-1"></i>{{ categoria.nombre }}
+                        </a>
+                        {% empty %}
+                        <span class="text-muted small">Sin categorías registradas.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

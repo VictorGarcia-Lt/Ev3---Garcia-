@@ -1,0 +1,433 @@
+:root {
+    --vetcare: #0e6b62;
+    --vetcare-dark: #08443f;
+    --vetcare-light: #e8f5f1;
+    --vetcare-mid: #cfe9e2;
+    --accent: #f2b705;
+    --ink: #1d2b2a;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #f6f9f8;
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/* Navbar                                                              */
+/* ------------------------------------------------------------------ */
+.bg-vetcare {
+    background: linear-gradient(120deg, var(--vetcare-dark) 0%, var(--vetcare) 100%);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, .85);
+    font-weight: 500;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #fff;
+}
+
+.brand-badge {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .16);
+    font-size: 1.3rem;
+}
+
+.brand-text {
+    font-weight: 800;
+    letter-spacing: -.02em;
+    font-size: 1.25rem;
+}
+
+.brand-text small {
+    font-weight: 500;
+    opacity: .8;
+}
+
+.badge-canasta {
+    position: absolute;
+    top: -2px;
+    right: -12px;
+    font-size: .65rem;
+    padding: .3em .55em;
+    border: 2px solid var(--vetcare-dark);
+}
+
+.avatar-nav {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .22);
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+/* ------------------------------------------------------------------ */
+/* Botones y utilidades                                                */
+/* ------------------------------------------------------------------ */
+.btn-vet {
+    background-color: var(--vetcare);
+    border-color: var(--vetcare);
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-vet:hover,
+.btn-vet:focus {
+    background-color: var(--vetcare-dark);
+    border-color: var(--vetcare-dark);
+    color: #fff;
+}
+
+.btn-outline-vet {
+    color: var(--vetcare);
+    border-color: var(--vetcare);
+    font-weight: 600;
+}
+
+.btn-outline-vet:hover,
+.btn-outline-vet:focus {
+    background-color: var(--vetcare);
+    border-color: var(--vetcare);
+    color: #fff;
+}
+
+.text-vetcare {
+    color: var(--vetcare) !important;
+}
+
+.text-white-75 {
+    color: rgba(255, 255, 255, .8) !important;
+}
+
+.bg-soft-green {
+    background-color: var(--vetcare-light) !important;
+}
+
+.bg-soft-blue {
+    background-color: #e7f0fb !important;
+}
+
+.bg-soft-amber {
+    background-color: #fdf4dc !important;
+}
+
+a {
+    color: var(--vetcare);
+}
+
+a:hover {
+    color: var(--vetcare-dark);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero y cabeceras                                                    */
+/* ------------------------------------------------------------------ */
+.hero-vetcare {
+    background:
+        radial-gradient(circle at 85% 20%, rgba(242, 183, 5, .18), transparent 35%),
+        linear-gradient(125deg, var(--vetcare-dark) 0%, var(--vetcare) 62%, #148575 100%);
+    color: #fff;
+}
+
+.hero-icon-wrap {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, .35);
+    background: rgba(255, 255, 255, .06);
+}
+
+.hero-icon {
+    font-size: 9rem;
+    color: var(--accent);
+    animation: latido 2.2s ease-in-out infinite;
+}
+
+@keyframes latido {
+    0%, 100% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+}
+
+.page-header-vetcare {
+    background: linear-gradient(120deg, var(--vetcare-dark) 0%, var(--vetcare) 100%);
+    color: #fff;
+}
+
+.page-header-vetcare .breadcrumb-item a,
+.page-header-vetcare .breadcrumb-item.active {
+    color: rgba(255, 255, 255, .78);
+    text-decoration: none;
+}
+
+.page-header-vetcare .breadcrumb-item a:hover {
+    color: #fff;
+}
+
+.page-header-vetcare .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, .5);
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.25rem 1rem;
+    height: 100%;
+    box-shadow: 0 2px 12px rgba(14, 107, 98, .08);
+}
+
+.stat-number {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--vetcare);
+    line-height: 1.1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tarjetas                                                            */
+/* ------------------------------------------------------------------ */
+.card {
+    border-radius: 1rem;
+}
+
+.feature-card,
+.especialidad-card,
+.card-prestacion {
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.feature-card:hover,
+.especialidad-card:hover,
+.card-prestacion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .7rem 1.6rem rgba(14, 107, 98, .13) !important;
+}
+
+.feature-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--vetcare);
+    background: var(--vetcare-light);
+}
+
+.bg-soft-blue.feature-icon {
+    color: #1f5f9e;
+    background: #e7f0fb;
+}
+
+.bg-soft-amber.feature-icon {
+    color: #96690a;
+    background: #fdf4dc;
+}
+
+.img-catalogo {
+    height: 190px;
+    object-fit: cover;
+    background: #eef3f2;
+}
+
+.placeholder-catalogo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vetcare);
+    font-size: 3rem;
+    background:
+        linear-gradient(135deg, var(--vetcare-light) 0%, #d7eee7 100%);
+}
+
+.precio-catalogo {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--vetcare);
+    white-space: nowrap;
+}
+
+.precio-detalle {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--vetcare);
+    line-height: 1;
+}
+
+.detalle-imagen {
+    max-height: 430px;
+    object-fit: cover;
+}
+
+.detalle-placeholder {
+    height: 320px;
+    color: var(--vetcare);
+    background: linear-gradient(135deg, var(--vetcare-light) 0%, #d7eee7 100%);
+}
+
+.cta-vetcare {
+    background:
+        radial-gradient(circle at 90% 10%, rgba(242, 183, 5, .25), transparent 40%),
+        linear-gradient(120deg, var(--vetcare-dark), var(--vetcare));
+}
+
+.team-avatar {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--vetcare), #1c9c8b);
+}
+
+.mapa-placeholder {
+    min-height: 230px;
+    background:
+        repeating-linear-gradient(45deg, #eef5f3, #eef5f3 12px, #e6f0ed 12px, #e6f0ed 24px);
+    border: 1px dashed var(--vetcare-mid);
+}
+
+/* ------------------------------------------------------------------ */
+/* Canasta, checkout y comprobante                                     */
+/* ------------------------------------------------------------------ */
+.tabla-canasta td,
+.tabla-canasta th {
+    padding: .9rem .75rem;
+}
+
+.total-canasta {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--vetcare);
+    white-space: nowrap;
+}
+
+.comprobante .table > :not(caption) > * > * {
+    padding: .65rem .5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Perfil                                                              */
+/* ------------------------------------------------------------------ */
+.perfil-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, var(--vetcare), #1c9c8b);
+    box-shadow: 0 6px 18px rgba(14, 107, 98, .25);
+}
+
+/* ------------------------------------------------------------------ */
+/* Formularios                                                         */
+/* ------------------------------------------------------------------ */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--vetcare);
+    box-shadow: 0 0 0 .2rem rgba(14, 107, 98, .15);
+}
+
+.form-check-input:checked {
+    background-color: var(--vetcare);
+    border-color: var(--vetcare);
+}
+
+/* ------------------------------------------------------------------ */
+/* Footer                                                              */
+/* ------------------------------------------------------------------ */
+.footer-vetcare {
+    background: var(--vetcare-dark);
+    color: #fff;
+}
+
+.footer-vetcare a {
+    color: rgba(255, 255, 255, .65);
+    text-decoration: none;
+}
+
+.footer-vetcare a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ */
+/* Impresión del comprobante                                           */
+/* ------------------------------------------------------------------ */
+@media print {
+    body {
+        background: #fff;
+    }
+
+    nav,
+    footer,
+    .no-print,
+    .alert,
+    .breadcrumb {
+        display: none !important;
+    }
+
+    main {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .comprobante {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+
+    .comprobante .card-header {
+        background: #fff !important;
+        color: #000 !important;
+        border-bottom: 2px solid #000;
+    }
+
+    .comprobante .text-white-75,
+    .comprobante .text-white-50 {
+        color: #444 !important;
+    }
+
+    .container {
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .hero-icon-wrap {
+        width: 220px;
+        height: 220px;
+    }
+
+    .hero-icon {
+        font-size: 6rem;
+    }
+}

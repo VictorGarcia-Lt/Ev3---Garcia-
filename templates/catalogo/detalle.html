@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}{{ producto.nombre }} · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'catalogo:lista' %}">Catálogo</a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'catalogo:lista' %}?categoria={{ producto.categoria.slug }}">
+                    {{ producto.categoria.nombre }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre|truncatechars:40 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm overflow-hidden">
+                {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" class="w-100 detalle-imagen" alt="{{ producto.nombre }}">
+                {% else %}
+                <div class="detalle-placeholder d-flex flex-column align-items-center justify-content-center">
+                    <i class="bi bi-bag-heart display-1"></i>
+                    <span class="small mt-2">Sin imagen cargada</span>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if user.is_staff %}
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <h2 class="h6 text-uppercase text-muted fw-bold mb-3">
+                        <i class="bi bi-shield-lock me-1"></i>Acciones de gestión
+                    </h2>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'catalogo:editar' producto.slug %}" class="btn btn-outline-vet">
+                            <i class="bi bi-pencil-square me-1"></i>Editar producto
+                        </a>
+                        <a href="{% url 'catalogo:eliminar' producto.slug %}" class="btn btn-outline-danger">
+                            <i class="bi bi-trash me-1"></i>Eliminar del catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-7">
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="badge bg-{{ producto.clase_estado }}">{{ producto.get_estado_display }}</span>
+                <span class="badge text-bg-light border">{{ producto.categoria.nombre }}</span>
+                {% if not producto.activo %}<span class="badge bg-dark">Baja lógica</span>{% endif %}
+            </div>
+            <h1 class="h2 fw-bold mb-2">{{ producto.nombre }}</h1>
+            <p class="text-muted small mb-3">
+                Código <span class="fw-semibold">{{ producto.codigo }}</span> ·
+                {{ producto.categoria.nombre }}
+            </p>
+
+            <div class="d-flex align-items-end gap-3 mb-4">
+                <div class="precio-detalle">{{ producto.precio|clp }}</div>
+                <div class="text-muted small pb-2">
+                    IVA incluido en el resumen de la canasta (19%).
+                </div>
+            </div>
+
+            <p class="text-secondary">{{ producto.descripcion|linebreaksbr }}</p>
+
+            <div class="card border-0 bg-soft-green mb-4">
+                <div class="card-body">
+                    <div class="row g-3 small">
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Categoría</span>
+                            <span class="fw-semibold">{{ producto.categoria.nombre }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Código interno</span>
+                            <span class="fw-semibold">{{ producto.codigo }}</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Stock disponible</span>
+                            <span class="fw-semibold">{{ producto.stock|default:"0" }} unidad(es)</span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted d-block">Marca</span>
+                            <span class="fw-semibold">{{ producto.marca|default:"Sin marca" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if producto.disponible %}
+            <form method="post" action="{% url 'pedidos:agregar' producto.pk %}" class="card border-0 shadow-sm">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <div class="card-body">
+                    <h2 class="h6 fw-bold mb-3"><i class="bi bi-basket-plus me-1 text-vetcare"></i>Agregar a la canasta</h2>
+                    <div class="row g-2 align-items-end">
+                        <div class="col-4 col-sm-3">
+                            <label for="cantidad" class="form-label small fw-semibold">Cantidad</label>
+                            <input type="number" class="form-control" id="cantidad" name="cantidad" value="1" min="1"
+                                   max="{{ producto.stock|default:0 }}">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <button type="submit" class="btn btn-vet w-100">
+                                <i class="bi bi-basket-plus me-1"></i>Agregar a la canasta
+                            </button>
+                        </div>
+                    </div>
+                    <p class="small text-muted mb-0 mt-2">
+                        Podrás ajustar la cantidad y ver el desglose de IVA en la canasta.
+                    </p>
+                </div>
+            </form>
+            {% else %}
+            <div class="alert alert-warning mb-0">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Este producto no está disponible para agregar en este momento.
+                Estado actual: <strong>{{ producto.get_estado_display }}</strong>.
+                {% if not producto.activo %}El registro se encuentra con baja lógica.{% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if relacionados %}
+    <section class="mt-5">
+        <h2 class="h4 fw-bold mb-3">También en {{ producto.categoria.nombre }}</h2>
+        <div class="row g-4">
+            {% for producto in relacionados %}
+                {% include "catalogo/_tarjeta.html" %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

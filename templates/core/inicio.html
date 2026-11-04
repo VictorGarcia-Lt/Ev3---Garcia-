@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}VetCare Central & Pet Shop · Productos para mascotas{% endblock %}
+
+{% block content %}
+<section class="hero-vetcare">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="badge rounded-pill text-bg-light mb-3 px-3 py-2">
+                    <i class="bi bi-bag-heart-fill text-danger me-1"></i>Tienda de productos para mascotas
+                </span>
+                <h1 class="display-4 fw-bold lh-sm mb-3">
+                    Todo para el bienestar de tu mascota, <span class="text-warning">en un solo lugar</span>.
+                </h1>
+                <p class="lead mb-4 text-white-75">
+                    Alimentos, higiene, accesorios y productos de cuidado. Compra en línea
+                    y recibe en casa o retira en nuestra tienda.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'catalogo:lista' %}" class="btn btn-light btn-lg fw-semibold px-4">
+                        <i class="bi bi-grid me-1"></i>Ver catálogo
+                    </a>
+                    <a href="{% url 'pedidos:ver_canasta' %}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-basket2 me-1"></i>Mi canasta
+                    </a>
+                </div>
+                <div class="d-flex flex-wrap gap-4 mt-5 small text-white-75">
+                    <span><i class="bi bi-check-circle-fill text-warning me-1"></i>Stock actualizado</span>
+                    <span><i class="bi bi-check-circle-fill text-warning me-1"></i>Compra en línea</span>
+                    <span><i class="bi bi-check-circle-fill text-warning me-1"></i>Retiro en tienda</span>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+                <div class="hero-icon-wrap">
+                    <i class="bi bi-bag-heart hero-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="row g-3 text-center">
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_productos }}</div>
+                <div class="small text-muted">Productos disponibles</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-number">{{ categorias|length }}</div>
+                <div class="small text-muted">Categorías activas</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-number">19%</div>
+                <div class="small text-muted">IVA informado en tu compra</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="small text-muted">Catálogo disponible en línea</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm feature-card">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-soft-green"><i class="bi bi-bag-heart"></i></div>
+                    <h3 class="h5 mt-3">Alimentos y nutrición</h3>
+                    <p class="text-secondary small mb-0">
+                        Alimentos balanceados, snacks y premios para perros y gatos,
+                        con opciones para cada etapa de su vida.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm feature-card">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-soft-blue"><i class="bi bi-droplet"></i></div>
+                    <h3 class="h5 mt-3">Higiene y cuidado</h3>
+                    <p class="text-secondary small mb-0">
+                        Shampoos, cepillos y productos de higiene para mantener
+                        a tu mascota limpia y cómoda.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm feature-card">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-soft-amber"><i class="bi bi-controller"></i></div>
+                    <h3 class="h5 mt-3">Accesorios y juguetes</h3>
+                    <p class="text-secondary small mb-0">
+                        Juguetes, camas, correas, comederos y accesorios para
+                        el día a día de tu mascota.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div>
+            <span class="text-uppercase small fw-bold text-vetcare">Categorías</span>
+            <h2 class="h3 fw-bold mb-1">Compra por categoría</h2>
+            <p class="text-secondary mb-0">Encuentra los productos que necesita tu mascota.</p>
+        </div>
+        <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-vet">Ver todo el catálogo</a>
+    </div>
+    <div class="row g-3">
+        {% for categoria in categorias %}
+        <div class="col-sm-6 col-lg-3">
+            <a href="{{ categoria.get_absolute_url }}" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm categoria-card">
+                    <div class="card-body">
+                        <div class="feature-icon bg-soft-green mb-3">
+                            <i class="bi bi-{% if 'alimento' in categoria.nombre|lower %}bag-heart{% elif 'farmac' in categoria.nombre|lower or 'cuidado' in categoria.nombre|lower %}capsule{% elif 'higiene' in categoria.nombre|lower %}droplet{% elif 'accesorio' in categoria.nombre|lower or 'juguete' in categoria.nombre|lower %}controller{% else %}basket{% endif %}"></i>
+                        </div>
+                        <h3 class="h6 text-dark">{{ categoria.nombre }}</h3>
+                        <p class="small text-secondary mb-2">{{ categoria.descripcion|truncatewords:12 }}</p>
+                        <span class="small fw-semibold text-vetcare">{{ categoria.total_activos }} producto(s) →</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Aún no hay categorías registradas. Ejecuta <code>python manage.py poblar_datos</code>.</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="bg-soft-green py-5 my-5">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <span class="text-uppercase small fw-bold text-vetcare">Recomendados</span>
+                <h2 class="h3 fw-bold mb-1">Productos destacados</h2>
+                <p class="text-secondary mb-0">
+                    Una selección de productos para el cuidado diario de tu mascota.
+                </p>
+            </div>
+            <a href="{% url 'catalogo:lista' %}" class="btn btn-vet">Explorar catálogo</a>
+        </div>
+        <div class="row g-4">
+            {% for producto in productos_destacados %}
+                {% include "catalogo/_tarjeta.html" %}
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info mb-0">
+                    Todavía no hay productos disponibles. Carga los datos de demostración
+                    con <code>python manage.py poblar_datos</code>.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="cta-vetcare rounded-4 p-4 p-lg-5 text-white">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <h2 class="h3 fw-bold mb-2">Compra productos para tu mascota en línea.</h2>
+                <p class="mb-0 text-white-75">
+                    Agrega productos a tu canasta, revisa el subtotal, el IVA y el total.
+                    Recibe tu compra en casa o retírala en tienda.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'catalogo:lista' %}" class="btn btn-light btn-lg fw-semibold">
+                    Ver catálogo <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

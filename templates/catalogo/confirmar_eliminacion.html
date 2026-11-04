@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}Eliminar {{ producto.nombre }} · VetCare Central{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'catalogo:lista' %}">Catálogo</a></li>
+                    <li class="breadcrumb-item"><a href="{{ producto.get_absolute_url }}">{{ producto.nombre|truncatechars:30 }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Eliminar</li>
+                </ol>
+            </nav>
+
+            <div class="card border-danger border-2 shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h1 class="h4 mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar eliminación</h1>
+                </div>
+                <div class="card-body p-4">
+                    <p class="mb-2">
+                        ¿Estás seguro de que deseas eliminar el producto
+                        <strong>«{{ producto.nombre }}»</strong> del catálogo?
+                    </p>
+                    <p class="text-secondary small mb-3">
+                        Código <strong>{{ producto.codigo }}</strong> · Categoría
+                        <strong>{{ producto.categoria.nombre }}</strong> ·
+                        Precio <strong>{{ producto.precio|clp }}</strong>
+                    </p>
+                    <div class="alert alert-warning small mb-4">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Esta acción elimina el registro de la base de datos y no se puede deshacer.
+                        Si solo quieres ocultarlo temporalmente, edita el producto y desmarca
+                        <strong>Producto activo</strong>.
+                    </div>
+
+                    <form method="post" class="d-flex flex-wrap gap-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i>Sí, eliminar
+                        </button>
+                        <a href="{{ producto.get_absolute_url }}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

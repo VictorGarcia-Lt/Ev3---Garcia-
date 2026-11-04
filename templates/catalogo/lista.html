@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load vetcare_extras %}
+
+{% block title %}Catálogo · VetCare Central{% endblock %}
+
+{% block content %}
+<section class="page-header-vetcare">
+    <div class="container py-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Catálogo</li>
+            </ol>
+        </nav>
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+            <div>
+                <h1 class="h2 fw-bold mb-1">Catálogo de productos</h1>
+                <p class="mb-0 text-white-75">
+                    Compra alimentos, higiene, accesorios y productos de cuidado para tu mascota.
+                </p>
+            </div>
+            {% if user.is_staff %}
+            <a href="{% url 'catalogo:crear' %}" class="btn btn-light fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i>Nuevo producto
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<div class="container my-4">
+    <div class="row g-4">
+        <aside class="col-lg-3">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
+                <div class="card-body p-4">
+                    <h2 class="h6 text-uppercase text-muted fw-bold mb-3">
+                        <i class="bi bi-funnel me-1"></i>Filtros
+                    </h2>
+                    <form method="get" action="{% url 'catalogo:lista' %}" novalidate>
+                        <div class="mb-3">
+                            <label for="buscar" class="form-label small fw-semibold">Buscar</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                <input type="search" class="form-control" id="buscar" name="q"
+                                       value="{{ busqueda }}" placeholder="Nombre, código, marca...">
+                            </div>
+                            <div class="form-text">Busca en nombre, descripción, código, marca y categoría.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoria" class="form-label small fw-semibold">Categoría</label>
+                            <select class="form-select" id="categoria" name="categoria">
+                                <option value="">Todas las categorías</option>
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.slug }}"
+                                        {% if categoria.slug == categoria_actual %}selected{% endif %}>
+                                    {{ categoria.nombre }} ({{ categoria.total_activos }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="orden" class="form-label small fw-semibold">Ordenar por</label>
+                            <select class="form-select" id="orden" name="orden">
+                                {% for clave, etiqueta in opciones_orden %}
+                                <option value="{{ clave }}" {% if clave == orden_actual %}selected{% endif %}>{{ etiqueta }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-vet">
+                                <i class="bi bi-funnel me-1"></i>Aplicar filtros
+                            </button>
+                            <a href="{% url 'catalogo:lista' %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1"></i>Limpiar filtros
+                            </a>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+                    <div class="small text-secondary">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Resultados</span>
+                            <span class="fw-semibold text-dark">{{ total_resultados }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>IVA referencial</span>
+                            <span class="fw-semibold text-dark">19%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="col-lg-9">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <span class="fw-semibold">{{ total_resultados }} resultado(s)</span>
+                    {% if busqueda %}
+                    <span class="text-muted">para «{{ busqueda }}»</span>
+                    {% endif %}
+                </div>
+                {% if busqueda or categoria_actual %}
+                <div class="d-flex flex-wrap gap-1">
+                    {% if busqueda %}<span class="badge text-bg-light border">Búsqueda: {{ busqueda }}</span>{% endif %}
+                    {% for categoria in categorias %}
+                        {% if categoria.slug == categoria_actual %}
+                        <span class="badge text-bg-light border">Categoría: {{ categoria.nombre }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="row g-4">
+                {% for producto in productos %}
+                    {% include "catalogo/_tarjeta.html" %}
+                {% empty %}
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-search display-4 text-muted"></i>
+                            <h2 class="h5 mt-3">No encontramos resultados</h2>
+                            <p class="text-secondary mb-3">
+                                Prueba con otro término de búsqueda o limpia los filtros aplicados.
+                            </p>
+                            <a href="{% url 'catalogo:lista' %}" class="btn btn-vet">
+                                Ver catálogo completo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+            <nav class="mt-4" aria-label="Paginación del catálogo">
+                <ul class="pagination justify-content-center flex-wrap">
+                    <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                        {% if page_obj.has_previous %}
+                        <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.previous_page_number }}"
+                           aria-label="Página anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                        {% else %}
+                        <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                        {% endif %}
+                    </li>
+                    {% for numero in page_obj.paginator.page_range %}
+                    <li class="page-item {% if numero == page_obj.number %}active{% endif %}">
+                        <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ numero }}">{{ numero }}</a>
+                    </li>
+                    {% endfor %}
+                    <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                        {% if page_obj.has_next %}
+                        <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.next_page_number }}"
+                           aria-label="Página siguiente">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        {% else %}
+                        <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                        {% endif %}
+                    </li>
+                </ul>
+                <p class="text-center small text-muted mb-0">
+                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }} ·
+                    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ total_resultados }}
+                </p>
+            </nav>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

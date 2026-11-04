@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Contacto · VetCare Central{% endblock %}
+
+{% block content %}
+<section class="page-header-vetcare">
+    <div class="container py-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'core:inicio' %}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Contacto</li>
+            </ol>
+        </nav>
+        <h1 class="display-6 fw-bold mb-2">Contacto y horarios</h1>
+        <p class="lead mb-0 text-white-75">
+            Visítanos, escríbenos o revisa nuestros horarios de tienda.
+        </p>
+    </div>
+</section>
+
+<section class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-soft-green mx-auto mb-3"><i class="bi bi-geo-alt"></i></div>
+                    <h2 class="h6">Dirección</h2>
+                    <p class="small text-secondary mb-0">Av. Los Robles 1240<br>Santiago, Región Metropolitana</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-soft-blue mx-auto mb-3"><i class="bi bi-telephone"></i></div>
+                    <h2 class="h6">Teléfonos</h2>
+                    <p class="small text-secondary mb-0">
+                        Tienda: +56 2 2345 6789<br>
+                        WhatsApp: +56 9 8765 4321
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-soft-amber mx-auto mb-3"><i class="bi bi-envelope"></i></div>
+                    <h2 class="h6">Correo</h2>
+                    <p class="small text-secondary mb-0">
+                        Ventas: hola@vetcare.cl<br>
+                        Administración: admin@vetcare.cl
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3"><i class="bi bi-clock-history me-2 text-vetcare"></i>Horario de tienda</h2>
+                    <table class="table table-sm align-middle mb-0">
+                        <tbody>
+                            <tr><td>Lunes a viernes</td><td class="text-end fw-semibold">09:00 – 20:00</td></tr>
+                            <tr><td>Sábado</td><td class="text-end fw-semibold">10:00 – 18:00</td></tr>
+                            <tr><td>Domingo y festivos</td><td class="text-end fw-semibold">Cerrado</td></tr>
+                        </tbody>
+                    </table>
+                    <hr>
+                    <p class="small text-secondary mb-3">
+                        Puedes retirar tu compra en tienda dentro del horario de tienda
+                        o coordinar el despacho de tus productos.
+                    </p>
+                    <a href="{% url 'catalogo:lista' %}" class="btn btn-vet">
+                        <i class="bi bi-bag-heart me-1"></i>Comprar productos
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3"><i class="bi bi-chat-dots me-2 text-vetcare"></i>¿Cómo llegar?</h2>
+                    <div class="mapa-placeholder rounded-3 d-flex flex-column align-items-center justify-content-center text-center p-4">
+                        <i class="bi bi-map display-4 text-vetcare mb-2"></i>
+                        <p class="small text-secondary mb-1">Av. Los Robles 1240, Santiago</p>
+                        <p class="small text-muted mb-0">
+                            Metro Los Leones · Estacionamiento para clientes
+                        </p>
+                    </div>
+                    <ul class="list-unstyled small text-secondary mt-3 mb-0">
+                        <li class="mb-1"><i class="bi bi-check2-circle text-vetcare me-1"></i>Acceso para sillas de ruedas</li>
+                        <li class="mb-1"><i class="bi bi-check2-circle text-vetcare me-1"></i>Zona de retiro de compras</li>
+                        <li><i class="bi bi-check2-circle text-vetcare me-1"></i>Estacionamiento gratuito por 1 hora</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
